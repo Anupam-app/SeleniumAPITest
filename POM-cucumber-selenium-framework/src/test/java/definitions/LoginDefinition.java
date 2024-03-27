@@ -1,14 +1,16 @@
 package definitions;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import org.junit.Assert;
+
+import junit.framework.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import pages.HomePage;
 import pages.LoginPage;
+
+import java.time.Duration;
 
 public class LoginDefinition {
 	private WebDriver driver;
@@ -18,23 +20,23 @@ public class LoginDefinition {
 	
 	public LoginDefinition() throws Exception {
 		driver = Hooks.driver;
-		wait = new WebDriverWait(driver, 5);
+		wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		loginPage = new LoginPage(driver, wait);
 		homePage = new HomePage(driver, wait);
 	}
 
-	@Given("^User is on login page$")
-	public void loginPage() {
-		Assert.assertTrue(loginPage.verifyOnLoginPage());
+	@Given("User navigate to {string}")
+	public void loginPage(String url) {
+		loginPage.getUrl(url);
 	}
 
-	@When("^User submit email and password$")
-	public void submitEmailPassword() {
-		loginPage.loginToSite("standard_user", "secret_sauce");
+	@And("validate page title {string}")
+	public void submitEmailPassword(String expected) {
+		Assert.assertEquals(loginPage.pageTile(),expected);
 	}
 
-	@Then("^User should be able to login sucessfully and new page open$")
-	public void successLogin() {
-		Assert.assertTrue(homePage.verifyOnHomePage());
+	@Then("User give the column title {string}")
+	public void userSetCoulmnTitle(String title) throws InterruptedException {
+		loginPage.setTitle(title);
 	}	
 }
